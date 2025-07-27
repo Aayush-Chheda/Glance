@@ -1,5 +1,6 @@
 package com.glance.backend.model;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,14 +13,22 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
 public class Post {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(updatable = false,nullable = false)
     private Integer id;
     private String name;
+    @Column(columnDefinition = "text")
     private String caption;
     private String location;
     private int likes;
     private Date postedDate;
     private Integer userImageId;
+
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JoinColumn(name = "post_id")
     private List<Comment> commentList;
 }
