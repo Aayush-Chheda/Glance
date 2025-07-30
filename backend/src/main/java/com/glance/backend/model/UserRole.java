@@ -26,4 +26,9 @@ public class UserRole {
 
     @ManyToOne
     private Role role;
+
+    public UserRole(AppUser appUser, Role role) {
+        this.appUser = appUser;
+        this.role = role;
+    }
 }
