@@ -8,6 +8,6 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(updatable = false,nullable = false)
-    private Integer id;
+    private Long id;
 
 }

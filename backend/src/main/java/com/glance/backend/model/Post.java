@@ -19,7 +19,7 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(updatable = false,nullable = false)
-    private Integer id;
+    private Long id;
     private String name;
     @Column(columnDefinition = "text")
     private String caption;
