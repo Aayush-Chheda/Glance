@@ -3,13 +3,15 @@ package com.glance.backend.utility;
 import com.glance.backend.model.AppUser;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-import org.hibernate.cfg.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+@Component
 public class EmailConstructor {
 
     @Autowired
@@ -33,7 +35,7 @@ public class EmailConstructor {
                 email.setTo(appUser.getEmail());
                 email.setSubject("Welcome To Glance");
                 email.setText(text, true);
-                email.setFrom(new InternetAddress(env.getProperties().getProperty("spring.mail.username")));
+                email.setFrom(new InternetAddress(env.getProperty("spring.mail.username")));
             }
         };
 

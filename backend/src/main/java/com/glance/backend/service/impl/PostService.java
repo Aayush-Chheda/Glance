@@ -6,6 +6,7 @@ import com.glance.backend.repository.IPostRepository;
 import com.glance.backend.service.IPostService;
 import com.glance.backend.utility.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -17,6 +18,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+@Service
 public class PostService implements IPostService {
 
     @Autowired
@@ -34,7 +36,7 @@ public class PostService implements IPostService {
         post.setPostedDate(new Date());
         post.setUserImageId(user.getId());
 
-        user.setPost(post);
+        user.setPost((List<Post>) post);
         postRepo.save(post);
         return post;
     }

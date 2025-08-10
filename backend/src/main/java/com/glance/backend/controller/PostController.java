@@ -2,6 +2,8 @@ package com.glance.backend.controller;
 
 import com.glance.backend.model.AppUser;
 import com.glance.backend.model.Post;
+import com.glance.backend.service.IAccountService;
+import com.glance.backend.service.IPostService;
 import com.glance.backend.service.impl.AccountService;
 import com.glance.backend.service.impl.CommentService;
 import com.glance.backend.service.impl.PostService;
@@ -22,10 +24,10 @@ public class PostController {
     private String postImageName;
 
     @Autowired
-    private PostService postService;
+    private IPostService postService;
 
     @Autowired
-    private AccountService accountService;
+    private IAccountService accountService;
 
     @Autowired
     CommentService commentService;

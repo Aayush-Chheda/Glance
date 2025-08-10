@@ -23,10 +23,11 @@ public class Post {
     private String name;
     @Column(columnDefinition = "text")
     private String caption;
+    private String username;
     private String location;
     private int likes;
     private Date postedDate;
-    private Integer userImageId;
+    private Long userImageId;
 
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "post_id")

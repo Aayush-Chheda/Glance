@@ -1,7 +1,7 @@
 package com.glance.backend.controller;
 
 import com.glance.backend.model.AppUser;
-import com.glance.backend.service.impl.AccountService;
+import com.glance.backend.service.IAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +23,11 @@ public class AccountController {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    AccountService accountService;
+    IAccountService iAccountService;
 
     @GetMapping("/list")
     public ResponseEntity<?> getUsersList() {
-        List<AppUser> users = accountService.userList();
+        List<AppUser> users = iAccountService.userList();
         if (users.isEmpty()) {
             return new ResponseEntity<>("No Users Found.", HttpStatus.OK);
         }
@@ -36,7 +36,7 @@ public class AccountController {
 
     @GetMapping("/{username}")
     public ResponseEntity<?> getUserInfo(@PathVariable String username) {
-        AppUser user = accountService.findByUsername(username);
+        AppUser user = iAccountService.findByUsername(username);
         if (user == null) {
             return new ResponseEntity<>("No Users Found.", HttpStatus.NOT_FOUND);
         }
@@ -45,7 +45,7 @@ public class AccountController {
 
     @GetMapping("/findByUsername/{username}")
     public ResponseEntity<?> getUsersListByUsername(@PathVariable String username) {
-        List<AppUser> users = accountService.getUsersListByUsername(username);
+        List<AppUser> users = iAccountService.getUsersListByUsername(username);
         if (users.isEmpty()) {
             return new ResponseEntity<>("No Users Found.", HttpStatus.OK);
         }
@@ -55,16 +55,16 @@ public class AccountController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody HashMap<String, String> request) {
         String username = request.get("username");
-        if (accountService.findByUsername(username) != null) {
+        if (iAccountService.findByUsername(username) != null) {
             return new ResponseEntity<>("usernameExist", HttpStatus.CONFLICT);
         }
         String email = request.get("email");
-        if (accountService.findByEmail(email) != null) {
+        if (iAccountService.findByEmail(email) != null) {
             return new ResponseEntity<>("emailExist", HttpStatus.CONFLICT);
         }
         String name = request.get("name");
         try {
-            AppUser user = accountService.saveUser(name, username, email);
+            AppUser user = iAccountService.saveUser(name, username, email);
             return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("An error occured", HttpStatus.BAD_REQUEST);
@@ -74,12 +74,12 @@ public class AccountController {
     @PostMapping("/update")
     public ResponseEntity<?> updateProfile(@RequestBody HashMap<String, String> request) {
         String id = request.get("id");
-        AppUser user = accountService.findUserById(Long.parseLong(id));
+        AppUser user = iAccountService.findUserById(Long.parseLong(id));
         if (user == null) {
             return new ResponseEntity<>("userNotFound", HttpStatus.NOT_FOUND);
         }
         try {
-            accountService.updateUser(user, request);
+            iAccountService.updateUser(user, request);
             userImageId = user.getId();
             return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (Exception e) {
@@ -90,7 +90,7 @@ public class AccountController {
     @PostMapping("/photo/upload")
     public ResponseEntity<String> fileUpload(@RequestParam("image") MultipartFile multipartFile) {
         try {
-            accountService.saveUserImage(multipartFile, userImageId);
+            iAccountService.saveUserImage(multipartFile, userImageId);
             return new ResponseEntity<>("User Picture Saved!", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("User Picture Not Saved", HttpStatus.BAD_REQUEST);
@@ -100,7 +100,7 @@ public class AccountController {
     @PostMapping("/changePassword")
     public ResponseEntity<String> changePassword(@RequestBody HashMap<String, String> request) {
         String username = request.get("username");
-        AppUser appUser = accountService.findByUsername(username);
+        AppUser appUser = iAccountService.findByUsername(username);
         if (appUser == null) {
             return new ResponseEntity<>("User not found!", HttpStatus.BAD_REQUEST);
         }
@@ -114,7 +114,7 @@ public class AccountController {
         try {
             if (newPassword != null && !newPassword.isEmpty() && !StringUtils.isEmpty(newPassword)) {
                 if (bCryptPasswordEncoder.matches(currentPassword, userPassword)) {
-                    accountService.updateUserPassword(appUser, newPassword);
+                    iAccountService.updateUserPassword(appUser, newPassword);
                 }
             } else {
                 return new ResponseEntity<>("IncorrectCurrentPassword", HttpStatus.BAD_REQUEST);
@@ -127,19 +127,19 @@ public class AccountController {
 
     @GetMapping("/resetPassword/{email}")
     public ResponseEntity<String> resetPassword(@PathVariable("email") String email) {
-        AppUser user = accountService.findByEmail(email);
+        AppUser user = iAccountService.findByEmail(email);
         if (user == null) {
             return new ResponseEntity<String>("emailNotFound", HttpStatus.BAD_REQUEST);
         }
-        accountService.resetPassword(user);
+        iAccountService.resetPassword(user);
         return new ResponseEntity<String>("EmailSent!", HttpStatus.OK);
     }
 
     @PostMapping("/delete")
     public ResponseEntity<String> deleteUser(@RequestBody HashMap<String, String> mapper) {
         String username = mapper.get("username");
-        AppUser user = accountService.findByUsername(username);
-        accountService.deleteUser(user);
+        AppUser user = iAccountService.findByUsername(username);
+        iAccountService.deleteUser(user);
         return new ResponseEntity<String>("User Deleted Successfully!", HttpStatus.OK);
     }
 }

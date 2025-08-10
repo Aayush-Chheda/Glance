@@ -13,6 +13,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -24,10 +25,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Service
 public class AccountService implements IAccountService {
-
-    @Autowired
-    AccountService accountService;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -54,7 +53,7 @@ public class AccountService implements IAccountService {
         appUser.setUsername(username);
         appUser.setEmail(email);
         Set<UserRole> userRoles = new HashSet<>();
-        userRoles.add(new UserRole(appUser, accountService.findUserRoleByName("USER")));
+        userRoles.add(new UserRole(appUser, this.findUserRoleByName("USER")));
         appUser.setUserRoles(userRoles);
         appUserRepo.save(appUser);
         byte[] bytes;
